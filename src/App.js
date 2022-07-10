@@ -7,23 +7,28 @@ class App extends React.Component {
     this.state = {
       display: '',
     };
-    this.playAudio = this.playAudio.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   };
 
-  playAudio(a) {
-    a.play();
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress);
   }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
+  }
+
   handleClick(e) {
     const audio = e.target.children[0];
-    this.playAudio(audio);
+    audio.currentTime = 0;
+    audio.play();
     this.setState({
       display: e.target.id.replaceAll("-", ' '),
     })
   }
-  handleKeyDown(e) {
+  handleKeyPress(e) {
     const audio = document.getElementById(e.key.toUpperCase());
+    audio.currentTime = 0;
     audio.play();
     this.setState({
       display: document.getElementById(e.key.toUpperCase()).parentElement.id.replaceAll("-", ' '),
@@ -32,7 +37,7 @@ class App extends React.Component {
   }
   render(){
     return (
-      <div id="drum-machine" onKeyPress={this.handleKeyDown}>
+      <div id="drum-machine">
         <div id="pad-container">
           <button className="drum-pad" id="Heater-1" onClick={this.handleClick}><audio className="clip" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3" id="Q"></audio>Q</button>
           <button className="drum-pad" id="Heater-2" onClick={this.handleClick}><audio className="clip" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3" id="W"></audio>W</button>
